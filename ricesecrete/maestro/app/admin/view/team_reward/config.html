@@ -1,0 +1,98 @@
+{include file="header" /}
+<div style="padding: 20px;">
+    <label>{$title}</label>
+    <table id="commissionTable" class="layui-table">
+        <thead>
+            <tr>
+                <th>阶段</th>
+                <th>最低直推人数</th>
+                <th class="text-center">达成条件</th>
+                <th>最低活跃人数</th>
+                <th>直推用户首充金额</th>
+                <th>奖励金额</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 回显数据 -->
+            {volist name="team_reward_config" id="config"}
+            <tr>
+                <td><input type="number" class="layui-input" name="phase[]" value="{$config.phase}" placeholder="阶段【由小到大排序】"></td>
+                <td><input type="number" class="layui-input" name="direct_referral_num[]" value="{$config.direct_referral_num}" placeholder="请输入人数"></td>
+                <td class="text-center">{$condition_txt}</td>
+                <td><input type="number" class="layui-input" name="active_num[]" value="{$config.active_num}" placeholder="请输入最少活跃人数"></td>
+                <td><input type="number" class="layui-input" name="recharge_money[]" value="{$config.recharge_money}" placeholder="请输入最低充值金额"></td>
+                <td><input type="number" class="layui-input" name="amount[]" value="{$config.amount}" placeholder="请输入奖励金额"></td>
+                <td><button class="layui-btn layui-btn-danger" onclick="deleteRow(this)">删除</button> </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+    <button id="addRowBtn" class="layui-btn layui-btn-normal" style="margin-top: 10px;">添加一行</button>
+    <button id="saveBtn" class="layui-btn" style="margin-top: 10px;">保存</button>
+</div>
+
+<script>
+    layui.use(['jquery'], function () {
+        var $ = layui.jquery;
+
+        // 添加一行
+        $('#addRowBtn').on('click', function () {
+            const newRow = `
+                <tr>
+                    <td><input type="number" class="layui-input" name="phase[]"  placeholder="阶段【由小到大排序】"></td>
+                    <td><input type="number" class="layui-input" name="direct_referral_num[]"  placeholder="请输入人数"></td>
+                    <td class="text-center">{$condition_txt}</td>
+                    <td><input type="number" class="layui-input" name="active_num[]"   placeholder="请输入最少活跃人数"></td>
+                    <td><input type="number" class="layui-input" name="recharge_money[]"  placeholder="请输入最低充值金额"></td>
+                    <td><input type="number" class="layui-input" name="amount[]"  placeholder="请输入奖励金额"></td>
+                    <td><button class="layui-btn layui-btn-danger" onclick="deleteRow(this)">删除</button></td>
+                </tr>`;
+            $('#commissionTable tbody').append(newRow);
+        });
+
+        // 保存数据
+        $('#saveBtn').on('click', function () {
+            const data = [];
+            $('#commissionTable tbody tr').each(function () {
+                const phase = $(this).find('input[name="phase[]"]').val();//阶段
+                const direct_referral_num = $(this).find('input[name="direct_referral_num[]"]').val();
+                const activeNum = $(this).find('input[name="active_num[]"]').val();
+                const recharge_money = $(this).find('input[name="recharge_money[]"]').val();
+                const amount = $(this).find('input[name="amount[]"]').val();
+
+                if (activeNum && amount && direct_referral_num && phase && recharge_money) {
+                    data.push({
+                        phase: phase,
+                        direct_referral_num: direct_referral_num,
+                        active_num: activeNum,
+                        amount: amount,
+                        recharge_money: recharge_money
+                    });
+                }
+            });
+
+            $.ajax({
+                url: '{:url("config/index")}',
+                type: "POST",
+                data: { "{$config_key}": JSON.stringify(data) },
+                success: function (res) {
+                    if (res.code === 1) {
+                        layer.msg('保存成功', { icon: 1 });
+                    } else {
+                        layer.msg('保存失败: ' + res.msg, { icon: 2 });
+                    }
+                },
+                error: function () {
+                    layer.msg('请求失败', { icon: 2 });
+                }
+            });
+        });
+    });
+
+    // 删除一行
+    function deleteRow(button) {
+        $(button).closest('tr').remove();
+    }
+</script>
+{include file="footer" /}

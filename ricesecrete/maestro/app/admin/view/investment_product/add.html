@@ -1,0 +1,132 @@
+{include file="header" /}
+<style>
+    .layui-form-label {
+        box-sizing: content-box;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-8">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{:lang("添加/修改")}</h5>
+            </div>
+            <div class="ibox-content">
+                <form class="form-horizontal m-t layui-form" id="dataForm" method="post" action="{:url('add')}">
+                    <input type="hidden" name="id" value="{$info.id|default=''}">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang("托管名称")}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="product_name" value="{$info.product_name|default=''}" lay-verify="required" class="layui-input" required>
+                        </div>
+                    </div>
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">{:lang("托管周期（小时）")}</label>-->
+<!--                        <div class="layui-input-block">-->
+<!--                            <input type="number" min="0.01" step="0.01" name="cycle" value="{$info.cycle|default=0}" lay-verify="required" class="layui-input" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang("收益率")}(%)：</label>
+                        <div class="layui-input-block">
+                            <input type="number" min="0.01" step="0.01" name="profit" value="{$info.profit|default=''}" lay-verify="required" class="layui-input" required>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="display: none">
+                        <label class="layui-form-label">{:lang("开始时间")}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="form-control" id="start_time" name="start_time" value="{$info.start_time|default='00:00:00'}"  placeholder="H点m分">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="display: none">
+                        <label class="layui-form-label">{:lang("结束时间")}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="form-control" id="end_time" name="end_time" value="{$info.end_time|default='23:59:59'}"  placeholder="H点m分">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang("托管收益文本")}：</label>
+                        <div class="layui-input-block">
+                            <input class="form-control" id="income_text"  name="income_text" value="{$info.income_text|default=''}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang("托管说明")}：</label>
+                        <div class="layui-input-block">
+                            <textarea class="form-control" id="description"  name="description" rows='6'>{$info.description|default=''}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">销售状态</label>
+                        <input type="checkbox" name="sales_status" title="启用|停用" lay-skin="switch" value="1"  {if isset($info.sale_status) && $info.sales_status == 1} checked {/if}>
+                        <input type="hidden" name="sales_status" value="1">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <input type="checkbox" name="status" title="启用|停用" lay-skin="switch" value="1"  {if isset($info.status) && $info.status == 1} checked {/if}>
+                    </div>
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">最低可购买VIP</label>-->
+<!--                        <div class="layui-input-block">-->
+                            <input type="hidden" name="level_id" value="{$info.level_id|default=0}" lay-verify="required" class="layui-input" required>
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">收益类型</label>-->
+<!--                        <div class="layui-input-block">-->
+                            <input type="hidden" name="profit_type" value="2" lay-verify="required" class="layui-input" required>
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">派息类型</label>-->
+<!--                        <div class="layui-input-block">-->
+                            <input type="hidden"  name="rebate_type" value="1" lay-verify="required" class="layui-input" required>
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">是否立马派息一次</label>-->
+<!--                        <input type="checkbox" name="is_shortly_rebate" title="启用|停用" lay-skin="switch" value="1"  {if isset($info.is_shortly_rebate) && $info.is_shortly_rebate == 1} checked {/if}>-->
+                            <input type="hidden" name="is_shortly_rebate" value="0" lay-verify="required" class="layui-input" required>
+<!--                    </div>-->
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="sort" value="{$info.sort|default=0}" lay-verify="required" class="layui-input">
+                            <div class="layui-form-mid layui-word-aux">数字越小越靠前</div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-6">
+                            <button class="btn btn-primary" type="submit">{:lang("提交")}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/admin/js/layui/module/xm-select.js"></script>
+<script>
+    $(document).ready(function () {
+      layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+          elem: '#start_time'
+          ,type: 'time'
+        });
+        laydate.render({
+          elem: '#end_time'
+          ,type: 'time'
+        });
+      });
+
+
+
+    })
+
+</script>
+{include file="footer" /}
